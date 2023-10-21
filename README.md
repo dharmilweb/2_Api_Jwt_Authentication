@@ -21,7 +21,6 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
     ```
 
 - Add Database :-
-    <p align="center"><a href="https://raw.githubusercontent.com/dharmilweb/2_Api_Jwt_Authentication/main/public/Api_Auth/Input_1.png" target="_blank"><img src="https://github.com/dharmilweb/2_Api_Jwt_Authentication/blob/main/public/Api_Auth/Input_0.png" width="400" alt="Laravel Logo"></a></p>
 
     - Change .env file :-
         ```html
@@ -39,7 +38,9 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
             php artisan migrate
         ```
 
-- Add JWT Configration ...
+        <p align="center"><a href="https://raw.githubusercontent.com/dharmilweb/2_Api_Jwt_Authentication/main/public/Api_Auth/Input_1.png" target="_blank"><img src="https://github.com/dharmilweb/2_Api_Jwt_Authentication/blob/main/public/Api_Auth/Input_0.png" width="400" alt="Laravel Logo"></a></p>
+
+- Add JWT Configration...
     - Command :-
         ```
             composer require tymon/jwt-auth
@@ -61,7 +62,9 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
     - Add  User.php Model...
         ```html
+            
             use Tymon\JWTAuth\Contracts\JWTSubject;
+
             class User extends Authenticatable implements JWTSubject
             {
                 ----
@@ -88,6 +91,46 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
             }
 
         ```
+
+    - Swagger Intigration :-
+        - Command :-
+            ```
+                composer require "darkaonline/l5-swagger"
+                php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+            ```
+
+        - Add Swagger Base in Controller file...
+
+            ```html
+                <?php
+
+                namespace App\Http\Controllers;
+
+                use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+                use Illuminate\Foundation\Validation\ValidatesRequests;
+                use Illuminate\Routing\Controller as BaseController;
+                    /**
+                        * @OA\Info(
+                        *    title="Your super  ApplicationAPI",
+                        *    version="1.0.0",
+                        * )
+                        * @OA\SecurityScheme(
+                        *        type="http",
+                        *        description="Login with email and password to get the authentication token",
+                        *       name="Token based Based",
+                        *        in="header",
+                        *        scheme="bearer",
+                        *        bearerFormat="JWT",
+                        *        securityScheme="apiAuth",
+                        * ),
+                    */
+                class Controller extends BaseController
+                {
+                    use AuthorizesRequests, ValidatesRequests;
+                }
+
+            ```]
+
     - Create Controller
         - Command :-
             ```
@@ -147,8 +190,9 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
                 ---------
             ]
         ```
-        
+
     - Create api.php file...
+
         ```html
             use App\Http\Controllers\AuthController;
 
@@ -162,6 +206,18 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
                 Route::post('/me', [AuthController::class, 'me'])->name('me');
             });
         ```
+                
+    - Run Swagger... [ First Create AuthController Then Run Swagger Command ]
+        - Command :-
+        ```
+            php artisan l5-swagger:generate
+        ```
+
+    - Run Laravel Project...
+        - Command :-
+            ```
+                php artisan serve
+            ```
 
 ## Authentications
 Laravel having different types of `Authentication` for [Web] & [Api] Checkout its.
