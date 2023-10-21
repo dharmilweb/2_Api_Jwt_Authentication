@@ -32,29 +32,138 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
             DB_USERNAME=root
             DB_PASSWORD=
         ```
+
 -  Add Tables in Database...
     - Command :-
         ```
             php artisan migrate
         ```
 
-### Premium Partners
+- Add JWT Configration ...
+    - Command :-
+        ```
+            composer require tymon/jwt-auth
+            php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+            php artisan jwt:secret
+        ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+    - Add config/auth.php Page...
+        ```html
+            'guards' => [
+            -----------
+                'api' => [
+                    'driver' => 'jwt',
+                    'provider' => 'users',
+                    'hash' => false,
+                ],
+            ],
+        ```
 
-## Support
+    - Add  User.php Model...
+        ```html
+            use Tymon\JWTAuth\Contracts\JWTSubject;
+            class User extends Authenticatable implements JWTSubject
+            {
+                ----
+                /**
+                * Get the identifier that will be stored in the subject claim of the JWT.
+                *
+                * @return mixed
+                */
+                public function getJWTIdentifier()
+                {
+                    return $this->getKey();
+                }
+
+
+                /**
+                * Return a key value array, containing any custom claims to be added to the JWT.
+                *
+                * @return array
+                */
+                public function getJWTCustomClaims()
+                {
+                    return [];
+                }
+            }
+
+        ```
+    - Create Controller
+        - Command :-
+            ```
+                php artisan make:controller AuthController
+            ```
+
+        - Inside [AuthController] file...
+
+        [AuthController]: https://github.com/dharmilweb/2_Api_Jwt_Authentication/blob/main/app/Http/Controllers/AuthController.php
+
+    - Create Middleware
+        - Command :-
+            ```
+                php artisan make:middleware JwtMiddleware
+            ```
+
+        - Inside [JwtMiddleware] file...
+
+            ```html
+                use JWTAuth;
+                use Exception;
+                
+                class JwtMiddleware
+                {
+                    /**
+                    * Handle an incoming request.
+                    *
+                    * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+                    */
+                    public function handle(Request $request, Closure $next): Response
+                    {
+                        try {
+                            $user = JWTAuth::parseToken()->authenticate();
+                        } catch (Exception $e) {
+                            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
+                                return response()->json(['status' => 'Token is Invalid'],401);
+                            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
+                                return response()->json(['status' => 'Token is Expired'],401);
+                            }else{
+                                return response()->json(['status' => 'Authorization Token not found'],401);
+                            }
+                        }
+                        return $next($request);
+                    }
+
+                }
+            ```
+
+    - Add Middleware in Kernel.php file...
+        ```html
+            protected $routeMiddleware = [
+                ---------
+                
+                    'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
+                    'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
+                    'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
+                ---------
+            ]
+        ```
+        
+    - Create api.php file...
+        ```html
+            use App\Http\Controllers\AuthController;
+
+            Route::post('/register', [AuthController::class, 'register'])->name('register');
+            Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+            Route::group(['middleware' => 'jwt.verify','prefix' => 'auth'], function ($router) {
+
+                Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+                Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+                Route::post('/me', [AuthController::class, 'me'])->name('me');
+            });
+        ```
+
+## Authentications
 Laravel having different types of `Authentication` for [Web] & [Api] Checkout its.
 
 - Web Authentication
