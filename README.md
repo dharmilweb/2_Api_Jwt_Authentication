@@ -219,6 +219,11 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
                 php artisan serve
             ```
 
+        - Url :-
+            ```
+                http://localhost:8000/api/documentation
+            ```
+                
         <p align="center"><a href="https://raw.githubusercontent.com/dharmilweb/2_Api_Jwt_Authentication/main/public/Api_Auth/Input_1.png" target="_blank"><img src="https://github.com/dharmilweb/2_Api_Jwt_Authentication/blob/main/public/Api_Auth/Input_1.png" width="400" alt="Laravel Logo"></a></p>
 
 ## Authentications
