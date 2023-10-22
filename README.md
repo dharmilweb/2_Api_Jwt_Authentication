@@ -227,13 +227,13 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
         <p align="center"><a href="https://raw.githubusercontent.com/dharmilweb/2_Api_Jwt_Authentication/main/public/Api_Auth/Input_1.png" target="_blank"><img src="https://github.com/dharmilweb/2_Api_Jwt_Authentication/blob/main/public/Api_Auth/Input_1.png" width="400" alt="Laravel Logo"></a></p>
 
 ## Authentications
-Laravel having different types of `Authentication` for [Web] & [Api] Checkout its.
+Laravel having different types of `Authentication` for Web & Api Checkout its.
 
-- Web Authentication
-- Api Authentication
+- [Web Authentication]
+- [Api Authentication]
 
-[Web]: https://github.com/dharmilweb/1_Web_Authentication
-[Api]: https://github.com/dharmilweb/2_Api_Jwt_Authentication
+[Web Authentication]: https://github.com/dharmilweb/1_Web_Authentication
+[Api Authentication]: https://github.com/dharmilweb/2_Api_Jwt_Authentication
 
 ## License
 
